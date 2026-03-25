@@ -59,29 +59,14 @@ const PLANS = [
   },
 ];
 
-const REVIEWS = [
-  {
-    name: "Александра Мельникова",
-    role: "Преподаватель истории",
-    text: "Pax Historia изменила мой подход к преподаванию. Материалы настолько глубокие и хорошо структурированные, что я использую их на каждом уроке.",
-    rating: 5,
-    avatar: "А",
-  },
-  {
-    name: "Дмитрий Волков",
-    role: "Историк-любитель",
-    text: "Подписка Консул полностью оправдывает себя. Куратор помогает разбираться в сложных темах, а архивные материалы — это настоящее сокровище.",
-    rating: 5,
-    avatar: "Д",
-  },
-  {
-    name: "Мария Соколова",
-    role: "Студентка исторического факультета",
-    text: "Начала с Легата для учёбы, перешла на Центуриона и не пожалела. Вебинары с настоящими историками — это что-то невероятное.",
-    rating: 5,
-    avatar: "М",
-  },
-];
+interface Review {
+  name: string;
+  role: string;
+  text: string;
+  rating: number;
+  avatar: string;
+  date: string;
+}
 
 const FAQ_ITEMS = [
   {
@@ -328,42 +313,156 @@ function PricingSection() {
   );
 }
 
+function ReviewCard({ r }: { r: Review }) {
+  return (
+    <div className="card-historia rounded-sm p-8">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex gap-1">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Icon
+              key={i}
+              name="Star"
+              size={14}
+              className={i < r.rating ? "text-[#C9A84C] fill-[#C9A84C]" : "text-[#3A2E1A]"}
+            />
+          ))}
+        </div>
+        <span className="font-body text-[10px] text-[#4A3E2A]">{r.date}</span>
+      </div>
+      <p className="font-display text-base italic text-[#C4A96A] leading-relaxed mb-8 font-light">
+        «{r.text}»
+      </p>
+      <div className="flex items-center gap-3 pt-4 border-t border-[rgba(201,168,76,0.15)]">
+        <div
+          className="w-10 h-10 rounded-full flex items-center justify-center font-display text-sm font-bold text-[#0D0B08] flex-shrink-0"
+          style={{ background: "linear-gradient(135deg, #C9A84C, #F5D78E)" }}
+        >
+          {r.avatar}
+        </div>
+        <div>
+          <div className="font-body text-xs font-semibold text-[#E8D5A3]">{r.name}</div>
+          <div className="font-body text-xs text-[#6B5B3E]">{r.role}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ReviewForm({ onSubmit }: { onSubmit: (r: Review) => void }) {
+  const [name, setName] = useState("");
+  const [role, setRole] = useState("");
+  const [text, setText] = useState("");
+  const [rating, setRating] = useState(5);
+  const [hovered, setHovered] = useState(0);
+  const [done, setDone] = useState(false);
+
+  const handleSubmit = () => {
+    if (!name.trim() || !text.trim()) return;
+    onSubmit({
+      name: name.trim(),
+      role: role.trim() || "Подписчик",
+      text: text.trim(),
+      rating,
+      avatar: name.trim()[0].toUpperCase(),
+      date: new Date().toLocaleDateString("ru-RU", { day: "2-digit", month: "long", year: "numeric" }),
+    });
+    setDone(true);
+  };
+
+  if (done) {
+    return (
+      <div className="card-historia rounded-sm p-8 flex flex-col items-center justify-center text-center min-h-[260px]">
+        <Icon name="CheckCircle" size={36} className="text-[#C9A84C] mb-4" />
+        <p className="font-display text-xl text-[#E8D5A3] mb-2">Спасибо за отзыв!</p>
+        <p className="font-body text-xs text-[#6B5B3E]">Ваш опыт поможет другим сделать выбор</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="card-historia rounded-sm p-8 border border-[rgba(201,168,76,0.35)]">
+      <p className="font-body text-xs tracking-widest uppercase text-[#C9A84C] mb-6">Оставить отзыв</p>
+
+      <div className="flex gap-1 mb-6">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <button
+            key={i}
+            onMouseEnter={() => setHovered(i + 1)}
+            onMouseLeave={() => setHovered(0)}
+            onClick={() => setRating(i + 1)}
+          >
+            <Icon
+              name="Star"
+              size={22}
+              className={`transition-colors ${i < (hovered || rating) ? "text-[#C9A84C] fill-[#C9A84C]" : "text-[#3A2E1A]"}`}
+            />
+          </button>
+        ))}
+      </div>
+
+      <div className="space-y-3">
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full bg-[#130F08] border border-[rgba(201,168,76,0.2)] rounded-sm px-4 py-3 font-body text-sm text-[#E8D5A3] focus:outline-none focus:border-[#C9A84C] transition-colors"
+          placeholder="Ваше имя *"
+        />
+        <input
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className="w-full bg-[#130F08] border border-[rgba(201,168,76,0.2)] rounded-sm px-4 py-3 font-body text-sm text-[#E8D5A3] focus:outline-none focus:border-[#C9A84C] transition-colors"
+          placeholder="Кто вы (необязательно)"
+        />
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          rows={4}
+          className="w-full bg-[#130F08] border border-[rgba(201,168,76,0.2)] rounded-sm px-4 py-3 font-body text-sm text-[#E8D5A3] focus:outline-none focus:border-[#C9A84C] transition-colors resize-none"
+          placeholder="Расскажите о своём опыте... *"
+        />
+        <button
+          onClick={handleSubmit}
+          disabled={!name.trim() || !text.trim()}
+          className="btn-gold w-full py-3 rounded-sm text-xs disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Опубликовать отзыв
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ReviewsSection() {
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  const addReview = (r: Review) => setReviews((prev) => [r, ...prev]);
+
   return (
     <section id="reviews" className="py-24" style={{ background: "#0D0B08" }}>
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
           <p className="font-body text-xs tracking-[0.3em] uppercase text-[#C9A84C] mb-4">Отзывы</p>
-          <h2 className="font-display text-5xl font-bold text-[#E8D5A3] mb-4">Что говорят историки</h2>
+          <h2 className="font-display text-5xl font-bold text-[#E8D5A3] mb-4">Что говорят подписчики</h2>
           <div className="divider-gold" />
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {REVIEWS.map((r) => (
-            <div key={r.name} className="card-historia rounded-sm p-8">
-              <div className="flex gap-1 mb-6">
-                {Array.from({ length: r.rating }).map((_, i) => (
-                  <Icon key={i} name="Star" size={14} className="text-[#C9A84C] fill-[#C9A84C]" />
-                ))}
-              </div>
-              <p className="font-display text-base italic text-[#C4A96A] leading-relaxed mb-8 font-light">
-                «{r.text}»
-              </p>
-              <div className="flex items-center gap-3 pt-4 border-t border-[rgba(201,168,76,0.15)]">
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center font-display text-sm font-bold text-[#0D0B08]"
-                  style={{ background: "linear-gradient(135deg, #C9A84C, #F5D78E)" }}
-                >
-                  {r.avatar}
-                </div>
-                <div>
-                  <div className="font-body text-xs font-semibold text-[#E8D5A3]">{r.name}</div>
-                  <div className="font-body text-xs text-[#6B5B3E]">{r.role}</div>
-                </div>
-              </div>
+        {reviews.length === 0 ? (
+          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            <div className="card-historia rounded-sm p-8 flex flex-col items-center justify-center text-center min-h-[260px]">
+              <Icon name="MessageSquare" size={32} className="text-[#3A2E1A] mb-4" />
+              <p className="font-display text-lg text-[#4A3E2A]">Пока нет отзывов</p>
+              <p className="font-body text-xs text-[#3A2E1A] mt-2">Станьте первым!</p>
             </div>
-          ))}
-        </div>
+            <ReviewForm onSubmit={addReview} />
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {reviews.map((r, i) => (
+              <ReviewCard key={i} r={r} />
+            ))}
+            <ReviewForm onSubmit={addReview} />
+          </div>
+        )}
       </div>
     </section>
   );
