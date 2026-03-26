@@ -11,9 +11,9 @@ const NAV_LINKS = [
 
 const PLANS = [
   {
-    name: "Легат",
-    price: "490",
-    period: "/мес",
+    name: "Basic",
+    priceSubscription: "450",
+    priceOneTime: "450",
     description: "Для начинающих исследователей",
     features: [
       "Доступ к базовой библиотеке",
@@ -25,9 +25,9 @@ const PLANS = [
     icon: "Shield",
   },
   {
-    name: "Центурион",
-    price: "990",
-    period: "/мес",
+    name: "Regular",
+    priceSubscription: "1 669",
+    priceOneTime: "1 369",
     description: "Для серьёзных исследователей",
     features: [
       "Полная библиотека материалов",
@@ -40,17 +40,17 @@ const PLANS = [
     icon: "Award",
   },
   {
-    name: "Консул",
-    price: "1 990",
-    period: "/мес",
+    name: "Pro",
+    priceSubscription: "2 969",
+    priceOneTime: "3 669",
     description: "Для истинных знатоков",
     features: [
-      "Всё из Центуриона",
+      "Всё из Regular",
       "Личный куратор-историк",
       "Доступ к редким архивам",
       "Эксклюзивные подкасты",
       "Печатные издания почтой",
-      "Закрытый клуб Консулов",
+      "Закрытый клуб Pro",
     ],
     popular: false,
     icon: "Crown",
@@ -244,73 +244,106 @@ function HeroSection() {
 }
 
 function PricingSection() {
+  const [mode, setMode] = useState<"subscription" | "onetime">("subscription");
+
   return (
     <section id="pricing" className="py-24" style={{ background: "#0a0a0a" }}>
       <div className="max-w-5xl mx-auto px-6">
-        <div className="mb-16">
+        <div className="mb-12">
           <div className="tag-neon mb-5">Тарифы</div>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-white/90 tracking-tight" style={{ letterSpacing: "-0.02em" }}>
             Выберите свой путь
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4">
-          {PLANS.map((plan) => (
-            <div
-              key={plan.name}
-              className={`relative p-8 flex flex-col rounded ${
-                plan.popular ? "neon-border" : "card-neo"
-              }`}
-              style={plan.popular ? { background: "#0f0f0f" } : {}}
+        <div className="flex mb-10">
+          <div
+            className="flex rounded overflow-hidden"
+            style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+          >
+            <button
+              onClick={() => setMode("subscription")}
+              className="px-5 py-2 text-xs font-body font-medium tracking-wide transition-all"
+              style={mode === "subscription"
+                ? { background: "#00ffaa", color: "#0a0a0a" }
+                : { background: "transparent", color: "rgba(255,255,255,0.35)" }
+              }
             >
-              {plan.popular && (
-                <div className="absolute -top-px left-0 right-0 h-px" style={{ background: "#00ffaa", boxShadow: "0 0 8px rgba(0,255,170,0.8)" }} />
-              )}
+              Подписка
+            </button>
+            <button
+              onClick={() => setMode("onetime")}
+              className="px-5 py-2 text-xs font-body font-medium tracking-wide transition-all"
+              style={mode === "onetime"
+                ? { background: "#00ffaa", color: "#0a0a0a" }
+                : { background: "transparent", color: "rgba(255,255,255,0.35)" }
+              }
+            >
+              Разовая покупка
+            </button>
+          </div>
+        </div>
 
-              {plan.popular && (
-                <span className="tag-neon mb-6 self-start">Популярный</span>
-              )}
-
-              <div className="mb-6">
-                <div
-                  className="w-8 h-8 flex items-center justify-center rounded mb-4"
-                  style={{ background: plan.popular ? "rgba(0,255,170,0.1)" : "rgba(255,255,255,0.04)", border: plan.popular ? "1px solid rgba(0,255,170,0.2)" : "1px solid rgba(255,255,255,0.06)" }}
-                >
-                  <Icon name={plan.icon as "Shield" | "Award" | "Crown"} size={16} className={plan.popular ? "text-[#00ffaa]" : "text-white/40"} />
-                </div>
-                <h3 className="font-display text-xl font-bold text-white/90 mb-1">{plan.name}</h3>
-                <p className="font-body text-xs text-white/30">{plan.description}</p>
-              </div>
-
-              <div className="mb-8">
-                <div className="flex items-baseline gap-1">
-                  <span className={`font-display text-4xl font-bold ${plan.popular ? "neon-text" : "text-white/80"}`}>{plan.price}</span>
-                  <span className="font-body text-sm text-white/25">₽{plan.period}</span>
-                </div>
-              </div>
-
-              <div className="flex-1 space-y-3 mb-8">
-                {plan.features.map((f) => (
-                  <div key={f} className="flex items-start gap-3">
-                    <span className={`mt-0.5 flex-shrink-0 text-xs ${plan.popular ? "text-[#00ffaa]" : "text-white/25"}`}>→</span>
-                    <span className="font-body text-xs text-white/50 leading-relaxed">{f}</span>
-                  </div>
-                ))}
-              </div>
-
-              <button
-                className={`w-full py-3 rounded text-xs font-medium tracking-wide ${
-                  plan.popular ? "btn-neon" : "btn-ghost"
-                }`}
+        <div className="grid md:grid-cols-3 gap-4">
+          {PLANS.map((plan) => {
+            const price = mode === "subscription" ? plan.priceSubscription : plan.priceOneTime;
+            const period = mode === "subscription" ? "/мес" : "";
+            return (
+              <div
+                key={plan.name}
+                className={`relative p-8 flex flex-col rounded ${plan.popular ? "neon-border" : "card-neo"}`}
+                style={plan.popular ? { background: "#0f0f0f" } : {}}
               >
-                {plan.popular ? "Начать бесплатно" : "Выбрать тариф"}
-              </button>
-            </div>
-          ))}
+                {plan.popular && (
+                  <div className="absolute -top-px left-0 right-0 h-px" style={{ background: "#00ffaa", boxShadow: "0 0 8px rgba(0,255,170,0.8)" }} />
+                )}
+                {plan.popular && (
+                  <span className="tag-neon mb-6 self-start">Популярный</span>
+                )}
+
+                <div className="mb-6">
+                  <div
+                    className="w-8 h-8 flex items-center justify-center rounded mb-4"
+                    style={{
+                      background: plan.popular ? "rgba(0,255,170,0.1)" : "rgba(255,255,255,0.04)",
+                      border: plan.popular ? "1px solid rgba(0,255,170,0.2)" : "1px solid rgba(255,255,255,0.06)",
+                    }}
+                  >
+                    <Icon name={plan.icon as "Shield" | "Award" | "Crown"} size={16} className={plan.popular ? "text-[#00ffaa]" : "text-white/40"} />
+                  </div>
+                  <h3 className="font-display text-xl font-bold text-white/90 mb-1">{plan.name}</h3>
+                  <p className="font-body text-xs text-white/30">{plan.description}</p>
+                </div>
+
+                <div className="mb-8">
+                  <div className="flex items-baseline gap-1">
+                    <span className={`font-display text-4xl font-bold transition-all ${plan.popular ? "neon-text" : "text-white/80"}`}>{price}</span>
+                    <span className="font-body text-sm text-white/25">₽{period}</span>
+                  </div>
+                  {mode === "onetime" && (
+                    <p className="font-body text-[10px] text-white/20 mt-1">единоразово</p>
+                  )}
+                </div>
+
+                <div className="flex-1 space-y-3 mb-8">
+                  {plan.features.map((f) => (
+                    <div key={f} className="flex items-start gap-3">
+                      <span className={`mt-0.5 flex-shrink-0 text-xs ${plan.popular ? "text-[#00ffaa]" : "text-white/25"}`}>→</span>
+                      <span className="font-body text-xs text-white/50 leading-relaxed">{f}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <button className={`w-full py-3 rounded text-xs font-medium tracking-wide ${plan.popular ? "btn-neon" : "btn-ghost"}`}>
+                  {plan.popular ? "Начать" : "Выбрать"}
+                </button>
+              </div>
+            );
+          })}
         </div>
 
         <p className="font-body text-[11px] text-white/20 mt-8 text-center tracking-wide">
-          7 дней бесплатно · Отмена в любой момент · Без скрытых платежей
+          7 дней бесплатно для подписки · Отмена в любой момент · Без скрытых платежей
         </p>
       </div>
     </section>
@@ -630,7 +663,7 @@ function Cabinet({ onClose }: { onClose: () => void }) {
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <p className="font-body text-[10px] text-white/25 uppercase tracking-widest mb-1">Текущий тариф</p>
-                    <h3 className="font-display text-2xl font-bold neon-text">Центурион</h3>
+                    <h3 className="font-display text-2xl font-bold neon-text">Regular</h3>
                   </div>
                   <span
                     className="px-2.5 py-1 rounded text-[10px] font-body uppercase tracking-widest"
