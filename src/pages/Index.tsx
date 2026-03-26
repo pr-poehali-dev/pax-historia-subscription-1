@@ -1,8 +1,6 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
 
-const HERO_IMAGE = "https://cdn.poehali.dev/projects/0c900aa3-a2d7-48dd-bfe0-0abd6caa6085/files/2487340f-e3eb-4cd4-83e4-d9419278bf75.jpg";
-
 const NAV_LINKS = [
   { label: "Главная", href: "#hero" },
   { label: "Тарифы", href: "#pricing" },
@@ -98,64 +96,73 @@ const PAYMENT_HISTORY = [
   { date: "01.12.2024", plan: "Легат", amount: "490 ₽", status: "Оплачено" },
 ];
 
+function scrollTo(href: string) {
+  const el = document.querySelector(href);
+  if (el) el.scrollIntoView({ behavior: "smooth" });
+}
+
 function NavBar({ onCabinetOpen }: { onCabinetOpen: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const scrollTo = (href: string) => {
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-    setMenuOpen(false);
-  };
-
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 border-b border-[rgba(201,168,76,0.15)]"
-      style={{ background: "rgba(13,11,8,0.92)", backdropFilter: "blur(16px)" }}
+      className="fixed top-0 left-0 right-0 z-50"
+      style={{
+        background: "rgba(10,10,10,0.9)",
+        backdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(255,255,255,0.05)",
+      }}
     >
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => scrollTo("#hero")}>
-          <span className="font-display text-xl font-bold gold-text tracking-widest">PAX HISTORIA</span>
-        </div>
+      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+        <button
+          onClick={() => scrollTo("#hero")}
+          className="font-display text-base font-600 tracking-tight text-white"
+        >
+          PAX <span className="neon-text">HISTORIA</span>
+        </button>
 
         <div className="hidden md:flex items-center gap-8">
           {NAV_LINKS.map((l) => (
             <button
               key={l.href}
               onClick={() => scrollTo(l.href)}
-              className="font-body text-xs tracking-widest uppercase text-[#C4A96A] hover:text-[#F5D78E] transition-colors duration-200"
+              className="font-body text-xs text-white/40 hover:text-white/80 transition-colors duration-200 tracking-wide"
             >
               {l.label}
             </button>
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={onCabinetOpen}
-            className="btn-outline-gold px-4 py-2 rounded text-xs flex items-center gap-2"
+            className="btn-ghost px-3 py-1.5 rounded text-xs flex items-center gap-1.5"
           >
-            <Icon name="User" size={14} />
+            <Icon name="User" size={13} />
             <span className="hidden sm:inline">Кабинет</span>
           </button>
-          <button className="btn-gold px-4 py-2 rounded text-xs hidden sm:block">
+          <button
+            onClick={() => scrollTo("#pricing")}
+            className="btn-neon px-4 py-1.5 rounded text-xs hidden sm:block"
+          >
             Начать
           </button>
-          <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
-            <Icon name={menuOpen ? "X" : "Menu"} size={20} className="text-[#C9A84C]" />
+          <button className="md:hidden p-1" onClick={() => setMenuOpen(!menuOpen)}>
+            <Icon name={menuOpen ? "X" : "Menu"} size={18} className="text-white/60" />
           </button>
         </div>
       </div>
 
       {menuOpen && (
         <div
-          className="md:hidden border-t border-[rgba(201,168,76,0.15)] px-6 py-4 flex flex-col gap-4"
-          style={{ background: "rgba(13,11,8,0.98)" }}
+          className="md:hidden px-6 py-4 flex flex-col gap-4"
+          style={{ borderTop: "1px solid rgba(255,255,255,0.05)", background: "rgba(10,10,10,0.98)" }}
         >
           {NAV_LINKS.map((l) => (
             <button
               key={l.href}
-              onClick={() => scrollTo(l.href)}
-              className="font-body text-xs tracking-widest uppercase text-[#C4A96A] hover:text-[#F5D78E] transition-colors text-left"
+              onClick={() => { scrollTo(l.href); setMenuOpen(false); }}
+              className="font-body text-xs text-white/40 hover:text-white/80 transition-colors text-left tracking-wide"
             >
               {l.label}
             </button>
@@ -167,74 +174,70 @@ function NavBar({ onCabinetOpen }: { onCabinetOpen: () => void }) {
 }
 
 function HeroSection() {
-  const scrollTo = (href: string) => {
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center hero-gradient overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ background: "#0a0a0a" }}>
+      <div className="absolute inset-0 scanline" />
       <div
-        className="absolute inset-0 bg-center bg-cover opacity-10"
-        style={{ backgroundImage: `url(${HERO_IMAGE})` }}
-      />
-      <div
-        className="absolute inset-0"
-        style={{ background: "radial-gradient(ellipse at center, transparent 20%, #0D0B08 80%)" }}
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full"
+        style={{
+          background: "radial-gradient(circle, rgba(0,255,170,0.06) 0%, transparent 70%)",
+          pointerEvents: "none",
+        }}
       />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6 text-center pt-16">
-        <div
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[rgba(201,168,76,0.3)] mb-8"
-          style={{ background: "rgba(201,168,76,0.05)" }}
-        >
-          <div className="w-1.5 h-1.5 rounded-full bg-[#C9A84C] animate-pulse" />
-          <span className="font-body text-xs tracking-[0.2em] uppercase text-[#C9A84C]">
-            Исторические подписки
-          </span>
+      <div className="relative z-10 max-w-4xl mx-auto px-6 text-center pt-14">
+        <div className="tag-neon mb-10">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#00ffaa] animate-pulse-neon" />
+          Исторические подписки
         </div>
 
-        <h1 className="font-display text-6xl md:text-8xl font-bold leading-none mb-6">
-          <span className="gold-text">Pax</span>
-          <br />
-          <span className="text-[#E8D5A3]">Historia</span>
+        <h1 className="font-display font-bold leading-none mb-8 tracking-tight">
+          <span
+            className="block text-[clamp(4rem,12vw,9rem)] text-white/90"
+            style={{ letterSpacing: "-0.03em" }}
+          >
+            Pax
+          </span>
+          <span
+            className="block text-[clamp(4rem,12vw,9rem)] neon-text animate-flicker"
+            style={{ letterSpacing: "-0.03em" }}
+          >
+            Historia
+          </span>
         </h1>
 
-        <div className="divider-gold mb-8" />
+        <div className="divider-neon mb-8 mx-auto" />
 
-        <p className="font-display text-xl md:text-2xl italic text-[#C4A96A] mb-4 font-light">
-          «Historia est magistra vitae»
-        </p>
-        <p className="font-body text-sm md:text-base text-[#8B7355] mb-12 max-w-2xl mx-auto leading-relaxed tracking-wide">
+        <p className="font-body text-sm text-white/35 mb-12 max-w-md mx-auto leading-relaxed tracking-wide">
           Погружайтесь в глубины мировой истории с эксклюзивными материалами,
-          архивными документами и лекциями ведущих историков планеты
+          архивными документами и лекциями ведущих историков
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button onClick={() => scrollTo("#pricing")} className="btn-gold px-8 py-4 rounded-sm text-sm">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <button onClick={() => scrollTo("#pricing")} className="btn-neon px-8 py-3 rounded text-sm">
             Выбрать подписку
           </button>
-          <button onClick={() => scrollTo("#reviews")} className="btn-outline-gold px-8 py-4 rounded-sm text-sm">
+          <button onClick={() => scrollTo("#faq")} className="btn-ghost px-8 py-3 rounded text-sm">
             Узнать больше
           </button>
         </div>
 
-        <div className="mt-20 grid grid-cols-3 gap-8 max-w-lg mx-auto">
+        <div className="mt-20 grid grid-cols-3 gap-8 max-w-sm mx-auto">
           {[
-            { value: "12 000+", label: "Подписчиков" },
+            { value: "12K+", label: "Подписчиков" },
             { value: "500+", label: "Материалов" },
             { value: "6 лет", label: "На рынке" },
           ].map((s) => (
             <div key={s.label} className="text-center">
-              <div className="font-display text-2xl md:text-3xl font-bold gold-text">{s.value}</div>
-              <div className="font-body text-xs tracking-widest uppercase text-[#6B5B3E] mt-1">{s.label}</div>
+              <div className="font-display text-2xl font-bold text-white/90 mb-1">{s.value}</div>
+              <div className="font-body text-[10px] tracking-widest uppercase text-white/25">{s.label}</div>
             </div>
           ))}
         </div>
       </div>
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <Icon name="ChevronDown" size={24} className="text-[#C9A84C] opacity-50" />
+        <Icon name="ChevronDown" size={20} className="text-white/20" />
       </div>
     </section>
   );
@@ -242,71 +245,72 @@ function HeroSection() {
 
 function PricingSection() {
   return (
-    <section id="pricing" className="py-24 section-alt">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <p className="font-body text-xs tracking-[0.3em] uppercase text-[#C9A84C] mb-4">Тарифные планы</p>
-          <h2 className="font-display text-5xl font-bold text-[#E8D5A3] mb-4">Выберите свой путь</h2>
-          <div className="divider-gold mb-6" />
-          <p className="font-body text-sm text-[#6B5B3E] max-w-lg mx-auto">
-            Каждый тариф — это врата в новый уровень исторического познания
-          </p>
+    <section id="pricing" className="py-24" style={{ background: "#0a0a0a" }}>
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="mb-16">
+          <div className="tag-neon mb-5">Тарифы</div>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white/90 tracking-tight" style={{ letterSpacing: "-0.02em" }}>
+            Выберите свой путь
+          </h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-4">
           {PLANS.map((plan) => (
             <div
               key={plan.name}
-              className={`relative rounded-sm p-8 flex flex-col ${
-                plan.popular
-                  ? "border border-[#C9A84C] shadow-[0_0_40px_rgba(201,168,76,0.2)]"
-                  : "card-historia"
+              className={`relative p-8 flex flex-col rounded ${
+                plan.popular ? "neon-border" : "card-neo"
               }`}
-              style={
-                plan.popular
-                  ? { background: "linear-gradient(145deg, #251C0A 0%, #1E1608 100%)" }
-                  : {}
-              }
+              style={plan.popular ? { background: "#0f0f0f" } : {}}
             >
               {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="btn-gold px-4 py-1 rounded-full text-[10px]">Популярный</span>
-                </div>
+                <div className="absolute -top-px left-0 right-0 h-px" style={{ background: "#00ffaa", boxShadow: "0 0 8px rgba(0,255,170,0.8)" }} />
+              )}
+
+              {plan.popular && (
+                <span className="tag-neon mb-6 self-start">Популярный</span>
               )}
 
               <div className="mb-6">
-                <div className="w-10 h-10 rounded-sm border border-[rgba(201,168,76,0.3)] flex items-center justify-center mb-4">
-                  <Icon name={plan.icon as "Shield" | "Award" | "Crown"} size={18} className="text-[#C9A84C]" />
+                <div
+                  className="w-8 h-8 flex items-center justify-center rounded mb-4"
+                  style={{ background: plan.popular ? "rgba(0,255,170,0.1)" : "rgba(255,255,255,0.04)", border: plan.popular ? "1px solid rgba(0,255,170,0.2)" : "1px solid rgba(255,255,255,0.06)" }}
+                >
+                  <Icon name={plan.icon as "Shield" | "Award" | "Crown"} size={16} className={plan.popular ? "text-[#00ffaa]" : "text-white/40"} />
                 </div>
-                <h3 className="font-display text-2xl font-bold text-[#E8D5A3] mb-1">{plan.name}</h3>
-                <p className="font-body text-xs text-[#6B5B3E]">{plan.description}</p>
+                <h3 className="font-display text-xl font-bold text-white/90 mb-1">{plan.name}</h3>
+                <p className="font-body text-xs text-white/30">{plan.description}</p>
               </div>
 
-              <div className="mb-6">
+              <div className="mb-8">
                 <div className="flex items-baseline gap-1">
-                  <span className="font-display text-4xl font-bold gold-text">{plan.price}</span>
-                  <span className="font-body text-sm text-[#6B5B3E]">₽{plan.period}</span>
+                  <span className={`font-display text-4xl font-bold ${plan.popular ? "neon-text" : "text-white/80"}`}>{plan.price}</span>
+                  <span className="font-body text-sm text-white/25">₽{plan.period}</span>
                 </div>
               </div>
 
               <div className="flex-1 space-y-3 mb-8">
                 {plan.features.map((f) => (
                   <div key={f} className="flex items-start gap-3">
-                    <Icon name="Check" size={14} className="text-[#C9A84C] mt-0.5 flex-shrink-0" />
-                    <span className="font-body text-xs text-[#C4A96A] leading-relaxed">{f}</span>
+                    <span className={`mt-0.5 flex-shrink-0 text-xs ${plan.popular ? "text-[#00ffaa]" : "text-white/25"}`}>→</span>
+                    <span className="font-body text-xs text-white/50 leading-relaxed">{f}</span>
                   </div>
                 ))}
               </div>
 
-              <button className={`w-full py-3 rounded-sm text-xs ${plan.popular ? "btn-gold" : "btn-outline-gold"}`}>
+              <button
+                className={`w-full py-3 rounded text-xs font-medium tracking-wide ${
+                  plan.popular ? "btn-neon" : "btn-ghost"
+                }`}
+              >
                 {plan.popular ? "Начать бесплатно" : "Выбрать тариф"}
               </button>
             </div>
           ))}
         </div>
 
-        <p className="text-center font-body text-xs text-[#4A3E2A] mt-8">
-          7 дней бесплатно для новых пользователей · Отмена в любой момент · Без скрытых платежей
+        <p className="font-body text-[11px] text-white/20 mt-8 text-center tracking-wide">
+          7 дней бесплатно · Отмена в любой момент · Без скрытых платежей
         </p>
       </div>
     </section>
@@ -315,33 +319,31 @@ function PricingSection() {
 
 function ReviewCard({ r }: { r: Review }) {
   return (
-    <div className="card-historia rounded-sm p-8">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex gap-1">
+    <div className="card-neo p-6 rounded">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex gap-0.5">
           {Array.from({ length: 5 }).map((_, i) => (
             <Icon
               key={i}
               name="Star"
-              size={14}
-              className={i < r.rating ? "text-[#C9A84C] fill-[#C9A84C]" : "text-[#3A2E1A]"}
+              size={12}
+              className={i < r.rating ? "text-[#00ffaa]" : "text-white/10"}
             />
           ))}
         </div>
-        <span className="font-body text-[10px] text-[#4A3E2A]">{r.date}</span>
+        <span className="font-body text-[10px] text-white/20">{r.date}</span>
       </div>
-      <p className="font-display text-base italic text-[#C4A96A] leading-relaxed mb-8 font-light">
-        «{r.text}»
-      </p>
-      <div className="flex items-center gap-3 pt-4 border-t border-[rgba(201,168,76,0.15)]">
+      <p className="font-body text-sm text-white/55 leading-relaxed mb-6">"{r.text}"</p>
+      <div className="flex items-center gap-3 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <div
-          className="w-10 h-10 rounded-full flex items-center justify-center font-display text-sm font-bold text-[#0D0B08] flex-shrink-0"
-          style={{ background: "linear-gradient(135deg, #C9A84C, #F5D78E)" }}
+          className="w-8 h-8 rounded flex items-center justify-center font-display text-xs font-bold text-black flex-shrink-0"
+          style={{ background: "#00ffaa" }}
         >
           {r.avatar}
         </div>
         <div>
-          <div className="font-body text-xs font-semibold text-[#E8D5A3]">{r.name}</div>
-          <div className="font-body text-xs text-[#6B5B3E]">{r.role}</div>
+          <div className="font-body text-xs font-medium text-white/70">{r.name}</div>
+          <div className="font-body text-[10px] text-white/25">{r.role}</div>
         </div>
       </div>
     </div>
@@ -371,61 +373,62 @@ function ReviewForm({ onSubmit }: { onSubmit: (r: Review) => void }) {
 
   if (done) {
     return (
-      <div className="card-historia rounded-sm p-8 flex flex-col items-center justify-center text-center min-h-[260px]">
-        <Icon name="CheckCircle" size={36} className="text-[#C9A84C] mb-4" />
-        <p className="font-display text-xl text-[#E8D5A3] mb-2">Спасибо за отзыв!</p>
-        <p className="font-body text-xs text-[#6B5B3E]">Ваш опыт поможет другим сделать выбор</p>
+      <div className="card-neo p-6 rounded flex flex-col items-center justify-center text-center min-h-[240px]">
+        <Icon name="CheckCircle" size={28} className="text-[#00ffaa] mb-3" />
+        <p className="font-display text-lg text-white/80 mb-1">Спасибо!</p>
+        <p className="font-body text-xs text-white/25">Ваш опыт поможет другим</p>
       </div>
     );
   }
 
   return (
-    <div className="card-historia rounded-sm p-8 border border-[rgba(201,168,76,0.35)]">
-      <p className="font-body text-xs tracking-widest uppercase text-[#C9A84C] mb-6">Оставить отзыв</p>
+    <div className="card-neo p-6 rounded" style={{ border: "1px solid rgba(0,255,170,0.12)" }}>
+      <p className="font-body text-[10px] tracking-widest uppercase text-white/30 mb-5">Ваш отзыв</p>
 
-      <div className="flex gap-1 mb-6">
+      <div className="flex gap-1 mb-5">
         {Array.from({ length: 5 }).map((_, i) => (
           <button
             key={i}
             onMouseEnter={() => setHovered(i + 1)}
             onMouseLeave={() => setHovered(0)}
             onClick={() => setRating(i + 1)}
+            className="transition-transform hover:scale-110"
           >
             <Icon
               name="Star"
-              size={22}
-              className={`transition-colors ${i < (hovered || rating) ? "text-[#C9A84C] fill-[#C9A84C]" : "text-[#3A2E1A]"}`}
+              size={20}
+              className={`transition-colors ${i < (hovered || rating) ? "text-[#00ffaa]" : "text-white/10"}`}
             />
           </button>
         ))}
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full bg-[#130F08] border border-[rgba(201,168,76,0.2)] rounded-sm px-4 py-3 font-body text-sm text-[#E8D5A3] focus:outline-none focus:border-[#C9A84C] transition-colors"
+          className="input-neo"
           placeholder="Ваше имя *"
         />
         <input
           value={role}
           onChange={(e) => setRole(e.target.value)}
-          className="w-full bg-[#130F08] border border-[rgba(201,168,76,0.2)] rounded-sm px-4 py-3 font-body text-sm text-[#E8D5A3] focus:outline-none focus:border-[#C9A84C] transition-colors"
+          className="input-neo"
           placeholder="Кто вы (необязательно)"
         />
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={4}
-          className="w-full bg-[#130F08] border border-[rgba(201,168,76,0.2)] rounded-sm px-4 py-3 font-body text-sm text-[#E8D5A3] focus:outline-none focus:border-[#C9A84C] transition-colors resize-none"
+          className="input-neo resize-none"
           placeholder="Расскажите о своём опыте... *"
         />
         <button
           onClick={handleSubmit}
           disabled={!name.trim() || !text.trim()}
-          className="btn-gold w-full py-3 rounded-sm text-xs disabled:opacity-40 disabled:cursor-not-allowed"
+          className="btn-neon w-full py-3 rounded text-xs disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          Опубликовать отзыв
+          Опубликовать
         </button>
       </div>
     </div>
@@ -434,29 +437,29 @@ function ReviewForm({ onSubmit }: { onSubmit: (r: Review) => void }) {
 
 function ReviewsSection() {
   const [reviews, setReviews] = useState<Review[]>([]);
-
   const addReview = (r: Review) => setReviews((prev) => [r, ...prev]);
 
   return (
-    <section id="reviews" className="py-24" style={{ background: "#0D0B08" }}>
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <p className="font-body text-xs tracking-[0.3em] uppercase text-[#C9A84C] mb-4">Отзывы</p>
-          <h2 className="font-display text-5xl font-bold text-[#E8D5A3] mb-4">Что говорят подписчики</h2>
-          <div className="divider-gold" />
+    <section id="reviews" className="py-24" style={{ background: "#0a0a0a", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="mb-16">
+          <div className="tag-neon mb-5">Отзывы</div>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white/90 tracking-tight" style={{ letterSpacing: "-0.02em" }}>
+            Что говорят подписчики
+          </h2>
         </div>
 
         {reviews.length === 0 ? (
-          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            <div className="card-historia rounded-sm p-8 flex flex-col items-center justify-center text-center min-h-[260px]">
-              <Icon name="MessageSquare" size={32} className="text-[#3A2E1A] mb-4" />
-              <p className="font-display text-lg text-[#4A3E2A]">Пока нет отзывов</p>
-              <p className="font-body text-xs text-[#3A2E1A] mt-2">Станьте первым!</p>
+          <div className="grid md:grid-cols-2 gap-4 max-w-2xl">
+            <div className="card-neo p-6 rounded flex flex-col items-center justify-center text-center min-h-[240px]">
+              <Icon name="MessageSquare" size={24} className="text-white/10 mb-3" />
+              <p className="font-body text-sm text-white/20">Пока нет отзывов</p>
+              <p className="font-body text-xs text-white/12 mt-1">Станьте первым</p>
             </div>
             <ReviewForm onSubmit={addReview} />
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {reviews.map((r, i) => (
               <ReviewCard key={i} r={r} />
             ))}
@@ -472,31 +475,32 @@ function FaqSection() {
   const [open, setOpen] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="py-24 section-alt">
-      <div className="max-w-3xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <p className="font-body text-xs tracking-[0.3em] uppercase text-[#C9A84C] mb-4">Вопросы и ответы</p>
-          <h2 className="font-display text-5xl font-bold text-[#E8D5A3] mb-4">FAQ</h2>
-          <div className="divider-gold" />
+    <section id="faq" className="py-24" style={{ background: "#0a0a0a", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <div className="max-w-2xl mx-auto px-6">
+        <div className="mb-16">
+          <div className="tag-neon mb-5">FAQ</div>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white/90 tracking-tight" style={{ letterSpacing: "-0.02em" }}>
+            Вопросы и ответы
+          </h2>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-1">
           {FAQ_ITEMS.map((item, i) => (
-            <div key={i} className="card-historia rounded-sm overflow-hidden">
+            <div key={i} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
               <button
-                className="w-full px-6 py-5 flex items-center justify-between text-left"
+                className="w-full py-5 flex items-center justify-between text-left group"
                 onClick={() => setOpen(open === i ? null : i)}
               >
-                <span className="font-body text-sm text-[#E8D5A3] pr-4">{item.q}</span>
+                <span className="font-body text-sm text-white/60 group-hover:text-white/80 transition-colors pr-6">{item.q}</span>
                 <Icon
-                  name={open === i ? "ChevronUp" : "ChevronDown"}
-                  size={16}
-                  className="text-[#C9A84C] flex-shrink-0 transition-transform duration-200"
+                  name={open === i ? "Minus" : "Plus"}
+                  size={14}
+                  className={`flex-shrink-0 transition-colors ${open === i ? "text-[#00ffaa]" : "text-white/25"}`}
                 />
               </button>
               {open === i && (
-                <div className="px-6 pb-5 border-t border-[rgba(201,168,76,0.1)]">
-                  <p className="font-body text-sm text-[#8B7355] leading-relaxed pt-4">{item.a}</p>
+                <div className="pb-5">
+                  <p className="font-body text-sm text-white/35 leading-relaxed">{item.a}</p>
                 </div>
               )}
             </div>
@@ -511,12 +515,13 @@ function ContactsSection() {
   const [sent, setSent] = useState(false);
 
   return (
-    <section id="contacts" className="py-24" style={{ background: "#0D0B08" }}>
-      <div className="max-w-4xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <p className="font-body text-xs tracking-[0.3em] uppercase text-[#C9A84C] mb-4">Связаться</p>
-          <h2 className="font-display text-5xl font-bold text-[#E8D5A3] mb-4">Контакты</h2>
-          <div className="divider-gold" />
+    <section id="contacts" className="py-24" style={{ background: "#0a0a0a", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="mb-16">
+          <div className="tag-neon mb-5">Контакты</div>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-white/90 tracking-tight" style={{ letterSpacing: "-0.02em" }}>
+            Связаться с нами
+          </h2>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12">
@@ -527,50 +532,42 @@ function ContactsSection() {
               { icon: "Clock", label: "Поддержка", value: "Пн–Пт, 9:00–18:00 МСК" },
             ].map((c) => (
               <div key={c.label} className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-sm border border-[rgba(201,168,76,0.3)] flex items-center justify-center flex-shrink-0">
-                  <Icon name={c.icon as "Mail" | "MessageCircle" | "Clock"} size={16} className="text-[#C9A84C]" />
+                <div
+                  className="w-9 h-9 rounded flex items-center justify-center flex-shrink-0"
+                  style={{ background: "rgba(0,255,170,0.06)", border: "1px solid rgba(0,255,170,0.12)" }}
+                >
+                  <Icon name={c.icon as "Mail" | "MessageCircle" | "Clock"} size={15} className="text-[#00ffaa]" />
                 </div>
                 <div>
-                  <div className="font-body text-xs text-[#6B5B3E] uppercase tracking-widest mb-1">{c.label}</div>
-                  <div className="font-body text-sm text-[#E8D5A3]">{c.value}</div>
+                  <div className="font-body text-[10px] text-white/25 uppercase tracking-widest mb-0.5">{c.label}</div>
+                  <div className="font-body text-sm text-white/65">{c.value}</div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="card-historia rounded-sm p-8">
+          <div>
             {sent ? (
-              <div className="text-center py-8">
-                <Icon name="CheckCircle" size={40} className="text-[#C9A84C] mx-auto mb-4" />
-                <p className="font-display text-xl text-[#E8D5A3]">Сообщение отправлено!</p>
-                <p className="font-body text-sm text-[#6B5B3E] mt-2">Мы ответим в течение 24 часов</p>
+              <div className="card-neo p-8 rounded text-center">
+                <Icon name="CheckCircle" size={32} className="text-[#00ffaa] mx-auto mb-4" />
+                <p className="font-display text-xl text-white/80 mb-1">Отправлено</p>
+                <p className="font-body text-sm text-white/25">Ответим в течение 24 часов</p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div>
-                  <label className="font-body text-xs text-[#6B5B3E] uppercase tracking-widest block mb-2">Имя</label>
-                  <input
-                    className="w-full bg-[#130F08] border border-[rgba(201,168,76,0.2)] rounded-sm px-4 py-3 font-body text-sm text-[#E8D5A3] focus:outline-none focus:border-[#C9A84C] transition-colors"
-                    placeholder="Ваше имя"
-                  />
+                  <label className="font-body text-[10px] text-white/25 uppercase tracking-widest block mb-2">Имя</label>
+                  <input className="input-neo" placeholder="Ваше имя" />
                 </div>
                 <div>
-                  <label className="font-body text-xs text-[#6B5B3E] uppercase tracking-widest block mb-2">Email</label>
-                  <input
-                    type="email"
-                    className="w-full bg-[#130F08] border border-[rgba(201,168,76,0.2)] rounded-sm px-4 py-3 font-body text-sm text-[#E8D5A3] focus:outline-none focus:border-[#C9A84C] transition-colors"
-                    placeholder="your@email.com"
-                  />
+                  <label className="font-body text-[10px] text-white/25 uppercase tracking-widest block mb-2">Email</label>
+                  <input type="email" className="input-neo" placeholder="your@email.com" />
                 </div>
                 <div>
-                  <label className="font-body text-xs text-[#6B5B3E] uppercase tracking-widest block mb-2">Сообщение</label>
-                  <textarea
-                    rows={4}
-                    className="w-full bg-[#130F08] border border-[rgba(201,168,76,0.2)] rounded-sm px-4 py-3 font-body text-sm text-[#E8D5A3] focus:outline-none focus:border-[#C9A84C] transition-colors resize-none"
-                    placeholder="Ваш вопрос..."
-                  />
+                  <label className="font-body text-[10px] text-white/25 uppercase tracking-widest block mb-2">Сообщение</label>
+                  <textarea rows={4} className="input-neo resize-none" placeholder="Ваш вопрос..." />
                 </div>
-                <button onClick={() => setSent(true)} className="btn-gold w-full py-3 rounded-sm text-xs">
+                <button onClick={() => setSent(true)} className="btn-neon w-full py-3 rounded text-xs">
                   Отправить сообщение
                 </button>
               </div>
@@ -588,31 +585,37 @@ function Cabinet({ onClose }: { onClose: () => void }) {
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.8)", backdropFilter: "blur(8px)" }}
+      style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(12px)" }}
     >
       <div
-        className="w-full max-w-2xl rounded-sm border border-[rgba(201,168,76,0.3)] overflow-hidden"
-        style={{ background: "#13100A", maxHeight: "90vh", overflowY: "auto" }}
+        className="w-full max-w-xl rounded overflow-hidden"
+        style={{ background: "#0d0d0d", border: "1px solid rgba(255,255,255,0.07)", maxHeight: "88vh", overflowY: "auto" }}
       >
-        <div className="flex items-center justify-between px-8 py-5 border-b border-[rgba(201,168,76,0.15)]">
+        <div
+          className="flex items-center justify-between px-7 py-4"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+        >
           <div>
-            <h2 className="font-display text-2xl text-[#E8D5A3]">Личный кабинет</h2>
-            <p className="font-body text-xs text-[#6B5B3E] mt-0.5">Александра Мельникова</p>
+            <h2 className="font-display text-xl text-white/85">Личный кабинет</h2>
+            <p className="font-body text-xs text-white/25 mt-0.5">Александра Мельникова</p>
           </div>
-          <button onClick={onClose} className="text-[#6B5B3E] hover:text-[#C9A84C] transition-colors">
-            <Icon name="X" size={20} />
+          <button onClick={onClose} className="text-white/25 hover:text-white/60 transition-colors">
+            <Icon name="X" size={18} />
           </button>
         </div>
 
-        <div className="px-8 py-4 border-b border-[rgba(201,168,76,0.1)] flex gap-6">
+        <div
+          className="px-7 py-3 flex gap-6"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
+        >
           {(["sub", "payments"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`font-body text-xs tracking-widest uppercase pb-2 border-b transition-all ${
+              className={`font-body text-xs tracking-wide pb-2 border-b transition-all ${
                 tab === t
-                  ? "text-[#C9A84C] border-[#C9A84C]"
-                  : "text-[#6B5B3E] border-transparent hover:text-[#C4A96A]"
+                  ? "text-[#00ffaa] border-[#00ffaa]"
+                  : "text-white/25 border-transparent hover:text-white/45"
               }`}
             >
               {t === "sub" ? "Подписка" : "История платежей"}
@@ -620,89 +623,86 @@ function Cabinet({ onClose }: { onClose: () => void }) {
           ))}
         </div>
 
-        <div className="p-8">
+        <div className="p-7">
           {tab === "sub" && (
             <div>
-              <div className="card-historia rounded-sm p-6 mb-6">
+              <div className="card-neo p-5 rounded mb-6" style={{ border: "1px solid rgba(0,255,170,0.12)" }}>
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <p className="font-body text-xs text-[#6B5B3E] uppercase tracking-widest mb-1">Текущий тариф</p>
-                    <h3 className="font-display text-3xl font-bold gold-text">Центурион</h3>
+                    <p className="font-body text-[10px] text-white/25 uppercase tracking-widest mb-1">Текущий тариф</p>
+                    <h3 className="font-display text-2xl font-bold neon-text">Центурион</h3>
                   </div>
                   <span
-                    className="px-3 py-1 rounded-full text-[10px] font-body uppercase tracking-widest"
-                    style={{
-                      background: "rgba(201,168,76,0.15)",
-                      color: "#C9A84C",
-                      border: "1px solid rgba(201,168,76,0.3)",
-                    }}
+                    className="px-2.5 py-1 rounded text-[10px] font-body uppercase tracking-widest"
+                    style={{ background: "rgba(0,255,170,0.08)", color: "#00ffaa", border: "1px solid rgba(0,255,170,0.2)" }}
                   >
                     Активна
                   </span>
                 </div>
-                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[rgba(201,168,76,0.1)]">
+                <div className="grid grid-cols-2 gap-4 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
                   <div>
-                    <p className="font-body text-xs text-[#6B5B3E] mb-1">Следующее списание</p>
-                    <p className="font-body text-sm text-[#E8D5A3]">01 апреля 2025</p>
+                    <p className="font-body text-[10px] text-white/25 mb-1">Следующее списание</p>
+                    <p className="font-body text-sm text-white/65">01 апреля 2025</p>
                   </div>
                   <div>
-                    <p className="font-body text-xs text-[#6B5B3E] mb-1">Сумма</p>
-                    <p className="font-body text-sm text-[#E8D5A3]">990 ₽/мес</p>
+                    <p className="font-body text-[10px] text-white/25 mb-1">Сумма</p>
+                    <p className="font-body text-sm text-white/65">990 ₽/мес</p>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <h4 className="font-body text-xs text-[#6B5B3E] uppercase tracking-widest mb-4">Включено в тариф</h4>
+              <div className="space-y-2.5 mb-7">
+                <p className="font-body text-[10px] text-white/20 uppercase tracking-widest">Включено в тариф</p>
                 {PLANS[1].features.map((f) => (
                   <div key={f} className="flex items-center gap-3">
-                    <Icon name="Check" size={14} className="text-[#C9A84C]" />
-                    <span className="font-body text-xs text-[#C4A96A]">{f}</span>
+                    <span className="text-[#00ffaa] text-xs">→</span>
+                    <span className="font-body text-xs text-white/45">{f}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="flex gap-3 mt-8">
-                <button className="btn-gold flex-1 py-3 rounded-sm text-xs">Повысить тариф</button>
-                <button className="btn-outline-gold flex-1 py-3 rounded-sm text-xs">Управление</button>
+              <div className="flex gap-2">
+                <button className="btn-neon flex-1 py-2.5 rounded text-xs">Повысить тариф</button>
+                <button className="btn-ghost flex-1 py-2.5 rounded text-xs">Управление</button>
               </div>
             </div>
           )}
 
           {tab === "payments" && (
             <div>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {PAYMENT_HISTORY.map((p, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between p-4 rounded-sm border border-[rgba(201,168,76,0.1)]"
-                    style={{ background: "rgba(201,168,76,0.03)" }}
+                    className="flex items-center justify-between p-4 rounded"
+                    style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="w-8 h-8 rounded-sm border border-[rgba(201,168,76,0.2)] flex items-center justify-center">
-                        <Icon name="Receipt" size={14} className="text-[#C9A84C]" />
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-7 h-7 rounded flex items-center justify-center flex-shrink-0"
+                        style={{ background: "rgba(0,255,170,0.06)", border: "1px solid rgba(0,255,170,0.1)" }}
+                      >
+                        <Icon name="Receipt" size={12} className="text-[#00ffaa]" />
                       </div>
                       <div>
-                        <p className="font-body text-xs font-medium text-[#E8D5A3]">{p.plan}</p>
-                        <p className="font-body text-xs text-[#6B5B3E]">{p.date}</p>
+                        <p className="font-body text-xs font-medium text-white/65">{p.plan}</p>
+                        <p className="font-body text-[10px] text-white/25">{p.date}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-body text-sm text-[#E8D5A3]">{p.amount}</p>
-                      <span className="text-[10px] font-body text-[#C9A84C]">{p.status}</span>
+                      <p className="font-body text-sm text-white/65">{p.amount}</p>
+                      <span className="text-[10px] font-body text-[#00ffaa]">{p.status}</span>
                     </div>
                   </div>
                 ))}
               </div>
 
               <div
-                className="mt-6 p-4 rounded-sm border border-[rgba(201,168,76,0.15)]"
-                style={{ background: "rgba(201,168,76,0.04)" }}
+                className="mt-5 p-4 rounded flex items-center justify-between"
+                style={{ background: "rgba(0,255,170,0.04)", border: "1px solid rgba(0,255,170,0.1)" }}
               >
-                <div className="flex items-center justify-between">
-                  <span className="font-body text-xs text-[#6B5B3E]">Всего потрачено</span>
-                  <span className="font-display text-lg font-bold gold-text">2 960 ₽</span>
-                </div>
+                <span className="font-body text-xs text-white/30">Всего потрачено</span>
+                <span className="font-display text-lg font-bold neon-text">2 960 ₽</span>
               </div>
             </div>
           )}
@@ -713,28 +713,25 @@ function Cabinet({ onClose }: { onClose: () => void }) {
 }
 
 function Footer() {
-  const scrollTo = (href: string) => {
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
-    <footer className="py-12 border-t border-[rgba(201,168,76,0.1)]" style={{ background: "#080604" }}>
-      <div className="max-w-6xl mx-auto px-6">
+    <footer className="py-10" style={{ background: "#0a0a0a", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+      <div className="max-w-5xl mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="font-display text-xl font-bold gold-text tracking-widest">PAX HISTORIA</div>
+          <div className="font-display text-base font-bold tracking-tight">
+            PAX <span className="neon-text">HISTORIA</span>
+          </div>
           <div className="flex flex-wrap justify-center gap-6">
             {NAV_LINKS.map((l) => (
               <button
                 key={l.href}
                 onClick={() => scrollTo(l.href)}
-                className="font-body text-xs text-[#4A3E2A] hover:text-[#C9A84C] transition-colors tracking-widest uppercase"
+                className="font-body text-[11px] text-white/20 hover:text-white/50 transition-colors tracking-wide"
               >
                 {l.label}
               </button>
             ))}
           </div>
-          <p className="font-body text-xs text-[#2E2416]">© 2025 Pax Historia</p>
+          <p className="font-body text-[11px] text-white/15">© 2025 Pax Historia</p>
         </div>
       </div>
     </footer>
@@ -745,7 +742,7 @@ export default function Index() {
   const [cabinetOpen, setCabinetOpen] = useState(false);
 
   return (
-    <div className="min-h-screen" style={{ background: "#0D0B08" }}>
+    <div className="min-h-screen" style={{ background: "#0a0a0a" }}>
       <NavBar onCabinetOpen={() => setCabinetOpen(true)} />
       <HeroSection />
       <PricingSection />

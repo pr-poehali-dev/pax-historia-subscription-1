@@ -19,8 +19,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				display: ['Cormorant Garamond', 'serif'],
-				body: ['Montserrat', 'sans-serif'],
+				display: ['Space Grotesk', 'sans-serif'],
+				body: ['Inter', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -56,20 +56,15 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				gold: {
-					light: '#F5D78E',
-					DEFAULT: '#C9A84C',
-					dark: '#8B6914',
+				neon: {
+					DEFAULT: '#00ffaa',
+					dim: 'rgba(0,255,170,0.15)',
+					bright: '#33ffbb',
 				},
-				parchment: {
-					light: '#F5EDD6',
-					DEFAULT: '#E8D5A3',
-					dark: '#C4A96A',
-				},
-				obsidian: {
-					light: '#2A2520',
-					DEFAULT: '#1A1510',
-					dark: '#0D0B08',
+				void: {
+					DEFAULT: '#0a0a0a',
+					soft: '#0f0f0f',
+					mid: '#151515',
 				},
 			},
 			borderRadius: {
@@ -87,29 +82,33 @@ export default {
 					to: { height: '0' }
 				},
 				'fade-in': {
-					from: { opacity: '0', transform: 'translateY(20px)' },
+					from: { opacity: '0', transform: 'translateY(16px)' },
 					to: { opacity: '1', transform: 'translateY(0)' }
 				},
 				'fade-in-slow': {
 					from: { opacity: '0' },
 					to: { opacity: '1' }
 				},
-				'slide-up': {
-					from: { opacity: '0', transform: 'translateY(40px)' },
-					to: { opacity: '1', transform: 'translateY(0)' }
+				'pulse-neon': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.4' },
 				},
-				'shimmer': {
-					'0%': { backgroundPosition: '-200% 0' },
-					'100%': { backgroundPosition: '200% 0' },
+				'flicker': {
+					'0%, 100%': { opacity: '1' },
+					'92%': { opacity: '1' },
+					'93%': { opacity: '0.6' },
+					'94%': { opacity: '1' },
+					'96%': { opacity: '0.8' },
+					'97%': { opacity: '1' },
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.8s ease-out forwards',
-				'fade-in-slow': 'fade-in-slow 1.5s ease-out forwards',
-				'slide-up': 'slide-up 0.8s ease-out forwards',
-				'shimmer': 'shimmer 3s linear infinite',
+				'fade-in': 'fade-in 0.6s ease-out forwards',
+				'fade-in-slow': 'fade-in-slow 1.2s ease-out forwards',
+				'pulse-neon': 'pulse-neon 2s ease-in-out infinite',
+				'flicker': 'flicker 4s linear infinite',
 			}
 		}
 	},
